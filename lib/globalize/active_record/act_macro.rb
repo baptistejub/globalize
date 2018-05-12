@@ -41,7 +41,8 @@ module Globalize
         end
 
         begin
-          if ::ActiveRecord::VERSION::STRING > "5.0" && table_exists? &&translation_class.table_exists?
+          # Don't try to connect to the db here as it may be unavailable (when building docker image for example)
+          if ::ActiveRecord::VERSION::STRING > "5.0" && connected? && table_exists? && translation_class.table_exists?
             self.ignored_columns += translated_attribute_names.map(&:to_s)
             reset_column_information
           end
